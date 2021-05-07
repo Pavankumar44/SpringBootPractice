@@ -66,7 +66,11 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	
+	/*@PutMapping("/users/{id}")
+	public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable Long id) {
+		userRepository.save(user);
+		return ResponseEntity.noContent().build();
+	}*/
 	
 
 }
