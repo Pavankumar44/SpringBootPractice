@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.bean.User;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
 
 @RestController
@@ -36,6 +37,9 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
 		Optional<User> user = userRepository.findById(id);
+		if(!user.isPresent()) {
+			throw new UserNotFoundException("The user with id - "+id+ " does not exists");
+		}
 		return new ResponseEntity<>(user, HttpStatus.FOUND);
 		
 	}
@@ -49,7 +53,10 @@ public class UserController {
 	
 	@DeleteMapping("/users/{id}")
 	public void deleteUser(@PathVariable Long id) {
-		
+		Optional<User> user = userRepository.findById(id);
+		if(!user.isPresent()) {
+			throw new UserNotFoundException("The user with id - "+id+ " does not exists");
+		}
 		userRepository.deleteById(id);
 	}
 	
@@ -62,15 +69,15 @@ public class UserController {
 	
 	@PutMapping("/users/{id}")
 	public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable Long id) {
+		Optional<User> updatedUser = userRepository.findById(id);
+		if(!updatedUser.isPresent()) {
+			throw new UserNotFoundException("The user with id - "+id+ " does not exists");
+		}
 		userRepository.save(user);
 		return ResponseEntity.noContent().build();
 	}
 	
-	/*@PutMapping("/users/{id}")
-	public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable Long id) {
-		userRepository.save(user);
-		return ResponseEntity.noContent().build();
-	}*/
+	
 	
 
 }
